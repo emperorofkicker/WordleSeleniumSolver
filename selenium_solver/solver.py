@@ -7,7 +7,8 @@ class Solver:
         self.lang = lang
         self.guess = '?' * n
 
-        self.dct = set(line.rstrip() for line in open(f'dictionaries/dictionary_{lang}.txt', encoding='utf-8') if len(line.rstrip()) == n)
+        self.dct = set(line.rstrip() for line in open(f'dictionaries/dictionary_{lang}.txt', encoding='utf-8') \
+                       if len(line.rstrip()) == n and not line.startswith('#'))
         self.letters = sorted(list(set(open(f'dictionaries/dictionary_{lang}.txt', encoding='utf-8').read())))
         self.letters.remove('\n')
         if '#' in self.letters:
