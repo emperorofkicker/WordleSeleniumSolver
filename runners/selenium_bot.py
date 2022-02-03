@@ -108,21 +108,25 @@ class SeleniumBot:
             self.click_keyboard(self.backspace_value)
 
     def solve_daily(self):
-        self.open()
-        self.begin()
+        try:
+            self.open()
+            self.begin()
 
-        solver = Solver(self.n, self.limit, self.lang)
-        while not self.is_solved() and self.turn < self.limit:
-            w = solver.best_word()
-            self.send_word(w)
-            ans = self.parse_ith_move(self.turn)
-            if solver.v:
-                print(ans)
-            if ans[0] != LetterStatus.UNCHECKED:
-                solver.update_information_about_word(w, ans)
-                sleep(2)
-                self.turn += 1
-            else:
-                self.clear_word()
+            solver = Solver(self.n, self.limit, self.lang)
+            while not self.is_solved() and self.turn < self.limit:
+                w = solver.best_word()
+                if w is None:
+                    raise Exception("Hidden word not found in the dictionary!")
+                self.send_word(w)
+                ans = self.parse_ith_move(self.turn)
+                if solver.v:
+                    print(ans)
+                if ans[0] != LetterStatus.UNCHECKED:
+                    solver.update_information_about_word(w, ans)
+                    sleep(2)
+                    self.turn += 1
+                else:
+                    self.clear_word()
 
-        self.close()
+        finally:
+            self.close()
